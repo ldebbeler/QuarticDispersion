@@ -6,16 +6,17 @@
 #include <complex>
 
 
-const std::string filenameImag{ "data/tangentialDependence.h5" };
-const std::string filenameFx{ "data/RadialScaling5.h5" };
-const std::string filenameReal{ "data/radialMomentumDependenceIR12.h5" };
-const std::string filenameRealParallel{ "data/radialMomentumDependenceParallel12.h5" };
-const std::string filenameTang{ "data/staticBubbleTangFlow10.h5" };
+const std::string filenameImag{ "data/fooQuartic.h5" };
+//const std::string filenameFx{ "data/RadialScaling5.h5" };
+//const std::string filenameReal{ "data/radialMomentumDependenceIR12.h5" };
+//const std::string filenameRealParallel{ "data/radialMomentumDependenceParallel12.h5" };
+//const std::string filenameTang{ "data/staticBubbleTangFlow10.h5" };
 
 
 inline constexpr std::complex<double> I{ std::complex<double>(0.0,1.0) };   // imaginary unit
+// correct scaling function for self energy require vF=1=b
 inline constexpr double vF{ 1.0 };  // Fermi Velocity
-inline constexpr double b{ 0.5 };   // quartic coefficient
+inline constexpr double b{ 1.0 };   // quartic coefficient
 
 // bubble calculation via scaling function. With 1d integral (gsl)
 inline constexpr double IRCutoff{ 1e-8 };   // lower Cutoff for k Integral Bubble(scaling Function)

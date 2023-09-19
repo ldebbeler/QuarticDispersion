@@ -7,11 +7,11 @@
 
 class writeh5 {
     scalingValues m_scaling;
-    bubbleValues m_bubble;
+    selfEnergyScaling m_seScale;
     seValuesImag m_selfEnergy;
 
 public:
-    writeh5(const scalingValues& scaling, const bubbleValues& bubble, const seValuesImag& sev);
+    writeh5(const scalingValues& scaling, const selfEnergyScaling& seScale, const seValuesImag& sev);
     writeh5();
 
 private:
@@ -23,8 +23,6 @@ private:
 
 public:
     void writeMainResults(H5::H5File file);    //write most important results into this group: selfenergy and static susceptibility at end of flow. Z-factors during flow.
-
-    //void writeFunc(H5::H5File file, const std::vector<double>& kr, const std::vector<double>& funcPos, const std::vector<double>& funcNeg);
 };    
 
 #endif //WRITEH5_H

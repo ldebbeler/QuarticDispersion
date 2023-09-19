@@ -9,41 +9,34 @@ struct scalingValues{
 
 }; 
 
-struct bubbleValues{
-    std::vector<double> m_omega;
-    std::vector<double> m_omegReal;
-    std::vector<double> m_omegImag;
-    double m_omegqr;
-    double m_omegqt;
-    std::vector<double> m_qr;
-    std::vector<double> m_radReal;
-    std::vector<double> m_radImag;
-    double m_radOmega;
-    double m_radqt;
-    std::vector<double> m_qt;
-    std::vector<double> m_tangReal;
-    std::vector<double> m_tangImag;
-    double m_tangOmega;
-    double m_tangqr;
+struct selfEnergyScaling{
+    std::vector<double> m_krtilde;
+    std::vector<double> m_radPos;
+    std::vector<double> m_radNeg;
+    
+    std::vector<double> m_kttilde;
+    std::vector<double> m_tangPos;
+    std::vector<double> m_tangNeg;
 
 };
-
 
 struct seValuesImag{
-    std::vector<double> m_freqs;
-    std::vector<double> m_rads;
-    //std::vector<double> m_SE;
-    std::vector<std::vector<double>> m_SE;
+    std::vector<double> m_freqsRad;
+    std::vector<double> m_radSe1;
+    double m_kr1;
+    std::vector<double> m_radSe2;
+    double m_kr2;
+    std::vector<double> m_radSe3;
+    double m_kr3;
 
-    double m_kr;
-    double m_kt;
+    std::vector<double> m_freqsTang;
+    std::vector<double> m_tangSe1;
+    double m_kt1;
+    std::vector<double> m_tangSe2;
+    double m_kt2;
+    std::vector<double> m_tangSe3;
+    double m_kt3;
 
 };
-/*
-struct seValuesReal{
-    std::vector<double> m_val;
-    std::vector<double> m_SEPos;
-    std::vector<double> m_SENeg;
-};
-*/
+
 #endif //DATASTRUCTS_H

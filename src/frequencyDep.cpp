@@ -4,7 +4,6 @@
 #include "interpolate1d.h"
 #include "datastructs.h"
 #include "selfenergy.h"
-#include "testBubble.h"
 #include "writeImag.h"
 #include "timer.hpp"
 #include "constants.h"
@@ -16,88 +15,92 @@ int main() {
     bubble bub;
 
     scalingValues scale;
-    bubbleValues bv;
-
-    testBubble foo(bub);
-    foo.writeBubble(scale, bv);
+    scale.m_x = bub.getxVector();
+    scale.m_real= bub.getReals();
+    scale.m_imag= bub.getImags();
 
     selfenergy SE(bub); 
 
-    std::cout << SE.integralPosTang(0.1) << '\n';
-    std::cout << SE.integralPosx(0.1) << '\n';
-    std::cout << SE.integralNegTang(0.1) << '\n';
-    std::cout << SE.integralNegx(0.1) << '\n';
-
     std::vector<double> x(201);
-    std::vector<double> funcPos(x.size());
-    std::vector<double> funcNeg(x.size());
+    std::vector<double> radPos(x.size());
+    std::vector<double> radNeg(x.size());
+    std::vector<double> y(x.size());
+    std::vector<double> tangPos(x.size());
+    std::vector<double> tangNeg(x.size());
     
     for(std::size_t i=0; i<x.size(); i++){
-        x[i] = -5.0+0.05*i;
-        //x[i] = 0.1*i;
+        double rval{ -5.0 + 0.05*i };
+        x[i] = rval;
+        radPos[i] = SE.integralPosx(rval);
+        radNeg[i] = SE.integralNegx(rval);
+        double tval{ 0.025*i };
+        y[i] = tval;
+        tangPos[i] = SE.integralPosTang(tval);
+        tangNeg[i] = SE.integralNegTang(tval);
     }
 
-    std::cout << x[0] << '\n';
-    std::cout << x[x.size()-1] << '\n';
-    
+    selfEnergyScaling seScale;
+    seScale.m_krtilde = x;
+    seScale.m_radPos = radPos;
+    seScale.m_radNeg = radNeg;
+    seScale.m_kttilde = y;
+    seScale.m_tangPos = tangPos;
+    seScale.m_tangNeg = tangNeg;
 
-    for(std::size_t i=0; i<x.size(); i++){
-        funcPos[i] = SE.integralPosx(x[i]);
-        funcNeg[i] = SE.integralNegx(x[i]);
+    std::vector<double> freqsRad(201);
+    std::vector<double> radSe1(201);
+    double kr1{-0.2 };
+    std::vector<double> radSe2(201);
+    double kr2{ 0.0 };
+    std::vector<double> radSe3(201);
+    double kr3{ 0.2 };
+    for(std::size_t i=0; i<freqsRad.size(); i++){
+        double omega{ -1.0 + 0.01*i };
+        freqsRad[i] = omega;
+        radSe1[i] = SE.integralLog(omega, kr1, 0.0).imag();
+        radSe2[i] = SE.integralLog(omega, kr2, 0.0).imag();
+        radSe3[i] = SE.integralLog(omega, kr3, 0.0).imag();
     }
 
-    H5::H5File file(filenameFx, H5F_ACC_TRUNC );
-    writeh5 writeFile;
-    writeFile.writeFunc(file, x, funcPos, funcNeg);
-
-
-    std::cout << "Results written to: \n " << filenameFx << '\n';
-
-    /*
-    std::vector<double> freqs(201);
-    std::vector<std::vector<double>> SEValues;
-    std::vector<double> kt(21);
-    double kr{ 0.0 };
-    
-    for(std::size_t i=0; i<freqs.size(); i++){
-        freqs[i] = -10.0+i*0.1;
-    }
-
-    //std::vector<double> krad(3);
-    for(std::size_t i=0; i<kt.size(); i++){
-        kt[i] = 0.1*i;
-    }
-
-    std::cout << freqs[0] << '\n';
-    std::cout << freqs[freqs.size()-1] << '\n';
-    std::cout << kt[0] << '\n';
-    std::cout << kt[kt.size()-1] << '\n';
-
-
-    for(std::size_t i=0; i<freqs.size(); i++){
-        std::vector<double> SEinner(kt.size());
-        for(std::size_t j=0; j<kt.size(); j++){
-            SEinner[j] = SE.integralLog(freqs[i], kr, kt[j]).imag();
-        }
-        SEValues.push_back(SEinner);
-    }
-
-    std::cout << SEValues.size() << '\n';
-    std::cout << SEValues[1].size() << '\n';
-    
     seValuesImag sev;
-    sev.m_freqs = freqs;
-    sev.m_rads = kt;
-    sev.m_SE = SEValues;
-    sev.m_kr = kr;
+    sev.m_freqsRad = freqsRad;
+    sev.m_radSe1 = radSe1;
+    sev.m_radSe2 = radSe2;
+    sev.m_radSe3 = radSe3;
+    sev.m_kr1 = kr1;
+    sev.m_kr2 = kr2;
+    sev.m_kr3 = kr3;
+
+    std::vector<double> freqsTang(201);
+    std::vector<double> tangSe1(201);
+    double kt1{ 0.0 };
+    std::vector<double> tangSe2(201);
+    double kt2{ std::pow(0.5, 0.25) };
+    std::vector<double> tangSe3(201);
+    double kt3{ std::pow(2.5, 0.25) };
+    for(std::size_t i=0; i<freqsTang.size(); i++){
+        double omega{ -10.0 + 0.1*i };
+        freqsTang[i] = omega;
+        tangSe1[i] = SE.integralLog(omega, 0.0, kt1).imag();
+        tangSe2[i] = SE.integralLog(omega, 0.0, kt2).imag();
+        tangSe3[i] = SE.integralLog(omega, 0.0, kt3).imag();
+    }
+
+    sev.m_freqsTang = freqsTang;
+    sev.m_tangSe1 = tangSe1;
+    sev.m_tangSe2 = tangSe2;
+    sev.m_tangSe3 = tangSe3;
+    sev.m_kt1 = kt1;
+    sev.m_kt2 = kt2;
+    sev.m_kt3 = kt3;
+
 
     H5::H5File file(filenameImag, H5F_ACC_TRUNC );
-    writeh5 writefile(scale, bv, sev);
-    writefile.writeMainResults(file);
+    writeh5 writeFile(scale, seScale, sev);
+    writeFile.writeMainResults(file);
 
 
     std::cout << "Results written to: \n " << filenameImag << '\n';
-    */
 
     double tseconds{ t.elapsed() };
     int minutes = (int) tseconds/60.0;

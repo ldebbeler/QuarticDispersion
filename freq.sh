@@ -7,7 +7,6 @@ g++ -std=c++17 -Wall -g -pedantic -I ./include  \
     src/grid.cpp                                \
     src/bubble.cpp                              \
     src/selfenergy.cpp                          \
-    src/testBubble.cpp                          \
     src/writeImag.cpp                           \
     src/frequencyDep.cpp                        \
     -o bin/FrequencyDep.elf                              \

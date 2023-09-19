@@ -3,8 +3,8 @@
 #include <iostream>
 #include "constants.h"
 
-writeh5::writeh5(const scalingValues& scaling, const bubbleValues& bubble, const seValuesImag& sev):
-    m_scaling(scaling), m_bubble(bubble), m_selfEnergy(sev) {}
+writeh5::writeh5(const scalingValues& scaling, const selfEnergyScaling& seScale, const seValuesImag& sev):
+    m_scaling(scaling), m_seScale(seScale), m_selfEnergy(sev) {}
 
 writeh5::writeh5() {}
 
@@ -49,11 +49,11 @@ void writeh5::writeMainResults(H5::H5File file){
     H5::DataSpace att_space(H5S_SCALAR);
 
 // group and data for scaling functions
-    H5::Group scaling = file.createGroup("/ScalingFunction");
+    H5::Group scaling = file.createGroup("/BubbleScale");
 
-    write1dvector(file, "/ScalingFunction/Variable", m_scaling.m_x);
-    write1dvector(file, "/ScalingFunction/Real", m_scaling.m_real);
-    write1dvector(file, "/ScalingFunction/Imag", m_scaling.m_imag);
+    write1dvector(file, "/BubbleScale/Variable", m_scaling.m_x);
+    write1dvector(file, "/BubbleScale/Real", m_scaling.m_real);
+    write1dvector(file, "/BubbleScale/Imag", m_scaling.m_imag);
 
     H5::Attribute upper_cutoff = scaling.createAttribute( "Upper Cutoff Bubble", double_type, att_space );
     upper_cutoff.write( double_type, &UVCutoff);
@@ -76,58 +76,40 @@ void writeh5::writeMainResults(H5::H5File file){
     H5::Attribute extrap = scaling.createAttribute( "extraPolate", double_type, att_space );
     extrap.write( double_type, &extraPolate);
 
-// group and data for bubble with real frequencies
-    H5::Group bubbleTest = file.createGroup("/Bubble");
-    write1dvector(file, "/Bubble/omega", m_bubble.m_omega);
-    write1dvector(file, "/Bubble/omegReal", m_bubble.m_omegReal);
-    write1dvector(file, "/Bubble/omegImag", m_bubble.m_omegImag);
-
-    write1dvector(file, "/Bubble/qr", m_bubble.m_qr);
-    write1dvector(file, "/Bubble/radReal", m_bubble.m_radReal);
-    write1dvector(file, "/Bubble/radImag", m_bubble.m_radImag);
-    
-    write1dvector(file, "/Bubble/qt", m_bubble.m_qt);
-    write1dvector(file, "/Bubble/tangReal", m_bubble.m_tangReal);
-    write1dvector(file, "/Bubble/tangImag", m_bubble.m_tangImag);
-
-    H5::Attribute omegqr = bubbleTest.createAttribute( "Freq qr", double_type, att_space );
-    omegqr.write( double_type, &m_bubble.m_omegqr);
-    H5::Attribute omegqt = bubbleTest.createAttribute( "Freq qt", double_type, att_space );
-    omegqt.write( double_type, &m_bubble.m_omegqt);
-
-    H5::Attribute radOmega = bubbleTest.createAttribute( "Radial omega", double_type, att_space );
-    radOmega.write( double_type, &m_bubble.m_radOmega);
-    H5::Attribute radqt = bubbleTest.createAttribute( "Radial qt", double_type, att_space );
-    radqt.write( double_type, &m_bubble.m_radqt);
-
-    H5::Attribute tangOmega = bubbleTest.createAttribute( "Tangential omega", double_type, att_space );
-    tangOmega.write( double_type, &m_bubble.m_tangOmega);
-    H5::Attribute tangqr = bubbleTest.createAttribute( "Tangential qr", double_type, att_space );
-    tangqr.write( double_type, &m_bubble.m_tangqr);
+    H5::Group seScale = file.createGroup("/SelfEnergyScaling");
+    write1dvector(file, "/SelfEnergyScaling/krtilde", m_seScale.m_krtilde);
+    write1dvector(file, "/SelfEnergyScaling/radPos", m_seScale.m_radPos);
+    write1dvector(file, "/SelfEnergyScaling/radNeg", m_seScale.m_radNeg);
+    write1dvector(file, "/SelfEnergyScaling/kttilde", m_seScale.m_kttilde);
+    write1dvector(file, "/SelfEnergyScaling/tangPos", m_seScale.m_tangPos);
+    write1dvector(file, "/SelfEnergyScaling/tangNeg", m_seScale.m_tangNeg);
 
 
-    H5::Group selfEnergy = file.createGroup("/SelfEnergy");
-    write1dvector(file, "/SelfEnergy/freqs", m_selfEnergy.m_freqs);
-    write1dvector(file, "/SelfEnergy/rads", m_selfEnergy.m_rads);
-    // uncomment for non empty set m_SE
-    write2dvector(file, "/SelfEnergy/SE", m_selfEnergy.m_SE);
+    H5::Group selfEnergy = file.createGroup("/imaginarySelfEnergy");
+    write1dvector(file, "/imaginarySelfEnergy/freqsRad", m_selfEnergy.m_freqsRad);
+    write1dvector(file, "/imaginarySelfEnergy/radSe1", m_selfEnergy.m_radSe1);
+    write1dvector(file, "/imaginarySelfEnergy/radSe2", m_selfEnergy.m_radSe2);
+    write1dvector(file, "/imaginarySelfEnergy/radSe3", m_selfEnergy.m_radSe3);
 
-    H5::Attribute krad = selfEnergy.createAttribute( "kr", double_type, att_space );
-    krad.write( double_type, &m_selfEnergy.m_kr);
+    H5::Attribute krad1 = selfEnergy.createAttribute( "kr1", double_type, att_space );
+    krad1.write( double_type, &m_selfEnergy.m_kr1);
+    H5::Attribute krad2 = selfEnergy.createAttribute( "kr2", double_type, att_space );
+    krad2.write( double_type, &m_selfEnergy.m_kr2);
+    H5::Attribute krad3 = selfEnergy.createAttribute( "kr3", double_type, att_space );
+    krad3.write( double_type, &m_selfEnergy.m_kr3);
 
-    H5::Attribute ktang = selfEnergy.createAttribute( "kt", double_type, att_space );
-    ktang.write( double_type, &m_selfEnergy.m_kt);
-    
+    write1dvector(file, "/imaginarySelfEnergy/freqsTang", m_selfEnergy.m_freqsTang);
+    write1dvector(file, "/imaginarySelfEnergy/tangSe1", m_selfEnergy.m_tangSe1);
+    write1dvector(file, "/imaginarySelfEnergy/tangSe2", m_selfEnergy.m_tangSe2);
+    write1dvector(file, "/imaginarySelfEnergy/tangSe3", m_selfEnergy.m_tangSe3);
+
+    H5::Attribute ktang1 = selfEnergy.createAttribute( "kt1", double_type, att_space );
+    ktang1.write( double_type, &m_selfEnergy.m_kt1);
+    H5::Attribute ktang2 = selfEnergy.createAttribute( "kt2", double_type, att_space );
+    ktang2.write( double_type, &m_selfEnergy.m_kt2);
+    H5::Attribute ktang3 = selfEnergy.createAttribute( "kt3", double_type, att_space );
+    ktang3.write( double_type, &m_selfEnergy.m_kt3);
+
+
 }
-
-/*
-void writeh5::writeFunc(H5::H5File file, const std::vector<double>& kr, const std::vector<double>& funcPos, const std::vector<double>& funcNeg){
-    H5::Group func = file.createGroup("/Funcx");
-    write1dvector(file, "/Funcx/args", kr);
-    write1dvector(file, "/Funcx/Posf", funcPos);
-    write1dvector(file, "/Funcx/Negf", funcNeg);
-}
-*/
-
-
 
