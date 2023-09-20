@@ -31,9 +31,11 @@ public:
     std::complex<double> integrandPosTang(double qr, double qt, double x);
     std::complex<double> integrandPosLogTang(double qr, double Qt, double x);
     double integralPosTang(double x);
+    double subtractTangPos(double x);
     std::complex<double> integrandNegTang(double qr, double qt, double x);
     std::complex<double> integrandNegLogTang(double qr, double Qt, double x);
     double integralNegTang(double x);
+    double subtractTangNeg(double x);
 
 };
 

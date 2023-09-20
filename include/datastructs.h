@@ -10,14 +10,24 @@ struct scalingValues{
 }; 
 
 struct selfEnergyScaling{
+    double m_Aplus;
+    double m_Aminus;
+
     std::vector<double> m_krtilde;
     std::vector<double> m_radPos;
     std::vector<double> m_radNeg;
+
+    std::vector<double> m_krFit;
+    std::vector<double> m_radPosFit;
+    std::vector<double> m_radNegFit;
     
     std::vector<double> m_kttilde;
     std::vector<double> m_tangPos;
     std::vector<double> m_tangNeg;
 
+    std::vector<double> m_ktFit;
+    std::vector<double> m_deltaTangPos;
+    std::vector<double> m_deltaTangNeg;
 };
 
 struct seValuesImag{

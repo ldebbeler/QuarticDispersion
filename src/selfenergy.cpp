@@ -106,6 +106,15 @@ double selfenergy::integralPosTang(double x){
     return integrate2Dmeasure2pi(0.0, 1.0/vF, std::log(IR), std::log(UV)).integrate(integ, prec2d, steps2d).imag();
 }
 
+double selfenergy::subtractTangPos(double x){
+    auto integ = [&] (double2 q) -> std::complex<double>{
+        double qr = q.x;
+        double Qt = q.y;
+        return integrandPosLogTang(qr, Qt, x) - integrandPosLogTang(qr, Qt, 0.0);
+    };
+    return integrate2Dmeasure2pi(0.0, 1.0/vF, std::log(IR), std::log(UV)).integrate(integ, prec2d, steps2d).imag();
+}
+
 std::complex<double> selfenergy::integrandNegTang(double qr, double qt, double x){
     return 1.0/m_bubble.evaluateCombo(vF*qr+1.0,qr-b/vF*std::pow(qt-x,4),qt);
 }
@@ -123,4 +132,12 @@ double selfenergy::integralNegTang(double x){
     return integrate2Dmeasure2pi(-1.0/vF, 0.0, std::log(IR), std::log(UV)).integrate(integ, prec2d, steps2d).imag();
 }
 
+double selfenergy::subtractTangNeg(double x){
+    auto integ = [&] (double2 q) -> std::complex<double>{
+        double qr = q.x;
+        double Qt = q.y;
+        return integrandNegLogTang(qr, Qt, x) - integrandNegLogTang(qr, Qt, 0.0);
+    };
+    return integrate2Dmeasure2pi(-1.0/vF, 0.0, std::log(IR), std::log(UV)).integrate(integ, prec2d, steps2d).imag();
+}
 

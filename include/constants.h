@@ -6,15 +6,13 @@
 #include <complex>
 
 
-const std::string filenameImag{ "data/fooQuartic.h5" };
-//const std::string filenameFx{ "data/RadialScaling5.h5" };
-//const std::string filenameReal{ "data/radialMomentumDependenceIR12.h5" };
-//const std::string filenameRealParallel{ "data/radialMomentumDependenceParallel12.h5" };
-//const std::string filenameTang{ "data/staticBubbleTangFlow10.h5" };
+const std::string filenameImag{ "data/quarticDispersion.h5" };
 
 
 inline constexpr std::complex<double> I{ std::complex<double>(0.0,1.0) };   // imaginary unit
-// correct scaling function for self energy require vF=1=b
+// correct scaling function for self energy requires here vF=1=b
+// I keep this version to illustrate the slight deviation in the Paper.
+// The correct scaling functions do not depend on vF and b
 inline constexpr double vF{ 1.0 };  // Fermi Velocity
 inline constexpr double b{ 1.0 };   // quartic coefficient
 
@@ -30,22 +28,11 @@ inline constexpr double minx{ 1e-5 };     //smallest nonzero grid value for loga
 inline constexpr double extraPolate{ 100.0 }; // scaling function is extrapolated for values larger than this
 
 // self energy calculation
-//inline constexpr bool staticApprox{ true };     // static approximation of the bubble for real part SE calculation
 // limits:
-inline constexpr double IR{ 1e-12 };         // lower cutoff for q Integral Self Energy
-inline constexpr double UV{ 100.0 };         // upper cutoff for q Integral Self Energy
+inline constexpr double IR{ 1e-8 };         // lower cutoff for q Integral Self Energy
+inline constexpr double UV{ 1e5 };         // upper cutoff for q Integral Self Energy
 // 2d precision
 inline constexpr int steps2d{ 1000*400 };
-inline constexpr double prec2d{ 1e-12 };
-// 3d precision
-inline constexpr double IRt{ IR };
-inline constexpr double UVt{ UV };
-inline constexpr int steps3d{ 1000*1000*200 };  //attempt to do 1000*1000*1000 on cluster (might take approx. 1 hour per value)
-inline constexpr double prec3d{ 1e-8 };
-
-// grid for self energy values (momentum dependence)
-inline constexpr std::size_t M { 25 }; //Number of grid points
-inline constexpr double mink{ 1e-4 };   //minimal k
-inline constexpr double maxk{ 1.0 };    //maximal k
+inline constexpr double prec2d{ 1e-10 };
 
 #endif  //CONSTANTS_H
