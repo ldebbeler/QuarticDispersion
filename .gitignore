@@ -2,3 +2,5 @@
 /data/.ipynb_checkpoints/
 /data/*.pdf
 /data/*.png
+/data/fermiSurface.nb
+/data/*.h5
